@@ -82,7 +82,7 @@ class _MessageBubbleState extends State<MessageBubble> {
                             color:
                                 widget.uid == user.uid ? Colors.white : Colors.black,
                             fontWeight: FontWeight.w700,
-                            fontSize: 20),
+                            fontSize: 20.5),
                       ),
                     ],
                   ),
