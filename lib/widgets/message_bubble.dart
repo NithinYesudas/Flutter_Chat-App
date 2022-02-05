@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class MessageBubble extends StatefulWidget {
-  MessageBubble(this.message, this.uid,this.imageUrl, this.myKey, {Key? key})
+  const MessageBubble(this.message, this.uid,this.imageUrl, this.myKey, {Key? key})
       : super(key: myKey);
 
   final String message;

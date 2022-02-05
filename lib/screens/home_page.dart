@@ -1,13 +1,24 @@
 import 'package:chatapp/widgets/messages.dart';
+import 'package:chatapp/widgets/user_list.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
+  Future<void> uploadImageUrl() async{
+    final imageUrl = await FirebaseStorage.instance.ref().child('user_images').child(FirebaseAuth.instance.currentUser!.uid+'.jpg').getDownloadURL();
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({'userImage': imageUrl});
+  }
 
   @override
   Widget build(BuildContext context) {
+    uploadImageUrl();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.redAccent,
@@ -44,7 +55,7 @@ class HomePage extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           } else {
-            return const Messages();
+            return const UserList();
           }
         },
       ),

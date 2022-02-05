@@ -90,6 +90,7 @@ class _MessagesState extends State<Messages> {
                         ),
                         ElevatedButton(
                             style: ButtonStyle(
+                             // fixedSize: MaterialStateProperty.all(const Size(30,30)),
                               padding: MaterialStateProperty.all(
                                 const EdgeInsets.only(
                                     left: 25, right: 22, top: 11, bottom: 11),
