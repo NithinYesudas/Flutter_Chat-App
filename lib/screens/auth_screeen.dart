@@ -47,7 +47,6 @@ class _AuthScreenState extends State<AuthScreen> {
             .child(authresult.user!.uid + '.jpg');
         ref.putFile(image!);
 
-
         await FirebaseFirestore.instance
             .collection('users')
             .doc(authresult.user!.uid)
@@ -70,9 +69,12 @@ class _AuthScreenState extends State<AuthScreen> {
       body: Stack(
         children: <Widget>[
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.lightGreenAccent, Colors.green],
+                colors: [
+                  Theme.of(context).primaryColor,
+                  Colors.blueAccent,
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -91,12 +93,11 @@ class _AuthScreenState extends State<AuthScreen> {
                       margin: const EdgeInsets.only(bottom: 20.0),
                       padding: EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: deviceSize.width * .15),
-                      transform: Matrix4.rotationZ(-8 * pi / 180)
-                        ..translate(-10.0),
+
                       // ..translate(-10.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.orange[700],
+                        color: Theme.of(context).accentColor,
                         boxShadow: const [
                           BoxShadow(
                             blurRadius: 8,

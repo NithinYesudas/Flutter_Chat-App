@@ -26,8 +26,6 @@ class _MessageBubbleState extends State<MessageBubble> {
 
   @override
   Widget build(BuildContext context) {
-    print('currentUid' + widget.currentUserId);
-    print("msguid" + widget.msgUid);
     return Row(
       mainAxisAlignment:
           isCurrentUser() ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -39,7 +37,9 @@ class _MessageBubbleState extends State<MessageBubble> {
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
           margin: EdgeInsets.all(5),
           decoration: BoxDecoration(
-              color: isCurrentUser() ? Colors.redAccent : Colors.white70,
+              color: isCurrentUser()
+                  ? Theme.of(context).primaryColor
+                  : Colors.white70,
               borderRadius: isCurrentUser()
                   ? const BorderRadius.only(
                       topLeft: Radius.circular(15),
@@ -53,7 +53,9 @@ class _MessageBubbleState extends State<MessageBubble> {
                     )),
           child: Text(
             widget.message,
-            style: TextStyle(fontSize: 20, color: Colors.black),
+            style: TextStyle(
+                fontSize: 20,
+                color: isCurrentUser() ? Colors.white : Colors.black),
           ),
         ),
       ],

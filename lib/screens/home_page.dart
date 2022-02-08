@@ -8,8 +8,12 @@ import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
-  Future<void> uploadImageUrl() async{
-    final imageUrl = await FirebaseStorage.instance.ref().child('user_images').child(FirebaseAuth.instance.currentUser!.uid+'.jpg').getDownloadURL();
+  Future<void> uploadImageUrl() async {
+    final imageUrl = await FirebaseStorage.instance
+        .ref()
+        .child('user_images')
+        .child(FirebaseAuth.instance.currentUser!.uid + '.jpg')
+        .getDownloadURL();
     await FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -20,11 +24,13 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     uploadImageUrl();
     return Scaffold(
+      drawer: Drawer(),
       appBar: AppBar(
-        backgroundColor: Colors.redAccent,
+        backgroundColor: Theme.of(context).primaryColor,
         title: const Text("Chat app"),
         actions: [
           DropdownButton(
+            iconEnabledColor: Colors.white,
             icon: const Icon(Icons.more_vert),
             items: [
               DropdownMenuItem(
@@ -55,7 +61,7 @@ class HomePage extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           } else {
-            return const UserList();
+            return UserList();
           }
         },
       ),

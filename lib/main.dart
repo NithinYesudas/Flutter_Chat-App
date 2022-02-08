@@ -6,7 +6,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp( MaterialApp(debugShowCheckedModeBanner: false,theme: ThemeData(primaryColor: Colors.redAccent), home: const MyApp()));
+  runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          primaryColor: Color(0xff1e5aff), accentColor: Color(0xffff8c20)),
+      home: const MyApp()));
 }
 
 class MyApp extends StatefulWidget {

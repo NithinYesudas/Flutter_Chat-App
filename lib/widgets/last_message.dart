@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 
 class LastMessage extends StatelessWidget {
   LastMessage(this.uid, {Key? key}) : super(key: key);
-  final String uid;
   final currentUid = FirebaseAuth.instance.currentUser!.uid;
-
+  final String uid;
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -14,7 +13,8 @@ class LastMessage extends StatelessWidget {
             .collection('chats')
             .doc(currentUid)
             .collection(uid)
-            .orderBy('message')
+            .orderBy('time')
+            .limitToLast(1)
             .snapshots(),
         builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -22,8 +22,9 @@ class LastMessage extends StatelessWidget {
           } else if (snapshot.data!.docs.isNotEmpty) {
             Map<String, dynamic> myData =
                 snapshot.data!.docs[0].data() as Map<String, dynamic>;
-
-            return Text(myData['message']);
+            return Text(
+              myData['message'],
+            );
           } else {
             return const Text("Has no text");
           }

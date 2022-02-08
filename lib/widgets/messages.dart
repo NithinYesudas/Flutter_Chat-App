@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Messages extends StatelessWidget {
-  Messages(
+class Messages extends StatefulWidget {
+  const Messages(
       {Key? key,
       required this.uid,
       required this.userName,
@@ -13,27 +13,107 @@ class Messages extends StatelessWidget {
   final String uid;
   final String userName;
   final String imageUrl;
+
+  @override
+  State<Messages> createState() => _MessagesState();
+}
+
+class _MessagesState extends State<Messages> {
   final _controller = TextEditingController();
 
   late String message = '';
 
   final controller = TextEditingController();
+
   final currentUid = FirebaseAuth.instance.currentUser!.uid;
+
+  Future<void> submit() async {
+    controller.clear();
+
+    if (message.isNotEmpty) {
+      try {
+        _controller.clear();
+
+        var reference = await FirebaseFirestore.instance
+            .collection('chats')
+            .doc(currentUid)
+            .collection(widget.uid)
+            .add({
+          "message": message,
+          "time": Timestamp.now(),
+          'userId': currentUid,
+          'seenStatus': 'seen'
+        });
+
+        await FirebaseFirestore.instance
+            .collection('chats')
+            .doc(widget.uid)
+            .collection(currentUid)
+            .doc(reference.id)
+            .set({
+          "message": message,
+          "time": Timestamp.now(),
+          'userId': currentUid,
+          'seenStatus': 'unseen',
+        });
+      } catch (error) {
+        print(error);
+      }
+    }
+  }
+
+  Future<void> seen() async {
+    print("seen function calling");
+    final snapshot = await FirebaseFirestore.instance
+        .collection('chats')
+        .doc(currentUid)
+        .collection(widget.uid)
+        .where('seenStatus', isEqualTo: "unseen")
+        .get();
+    final changeLength = snapshot.docs.length;
+    for (int i = 0; i < changeLength; i++) {
+      final docId = snapshot.docs[i].id;
+
+      await FirebaseFirestore.instance
+          .collection('chats')
+          .doc(currentUid)
+          .collection(widget.uid)
+          .doc(docId)
+          .update({"seenStatus": 'seen'});
+    }
+  }
+
+  bool isInit = false;
+  @override
+  void initState() {
+    isInit = true;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (isInit = true) {
+      seen();
+    }
+    isInit = false;
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.redAccent,
+          backgroundColor: Theme.of(context).primaryColor,
           title: Row(
             children: [
               CircleAvatar(
-                backgroundImage: NetworkImage(imageUrl),
+                backgroundImage: NetworkImage(widget.imageUrl),
               ),
               const SizedBox(
                 width: 15,
               ),
-              Text(userName),
+              Text(widget.userName),
             ],
           ),
         ),
@@ -43,7 +123,7 @@ class Messages extends StatelessWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: NetworkImage(imageUrl),
+                    image: NetworkImage(widget.imageUrl),
                   ),
                 ),
                 height: MediaQuery.of(context).size.height * .82,
@@ -52,7 +132,7 @@ class Messages extends StatelessWidget {
                     stream: FirebaseFirestore.instance
                         .collection('chats')
                         .doc(currentUid)
-                        .collection(uid)
+                        .collection(widget.uid)
                         .orderBy('time')
                         .snapshots(),
                     builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshots) {
@@ -63,7 +143,7 @@ class Messages extends StatelessWidget {
                         );
                       } else if (snapshots.data!.docs.isNotEmpty) {
                         return ListView.builder(
-                            padding: EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(10),
                             itemCount: snapshots.data!.docs.length,
                             itemBuilder: (ctx, index) {
                               Map<String, dynamic> myData =
@@ -76,7 +156,7 @@ class Messages extends StatelessWidget {
                                   msgUid: myData['userId']);
                             });
                       } else {
-                        return Text('No text yet');
+                        return const Text('No text yet');
                       }
                     })),
             Row(
@@ -84,7 +164,7 @@ class Messages extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.only(top: 10, bottom: 20, left: 10),
-                  height: MediaQuery.of(context).size.height * .1,
+                  height: MediaQuery.of(context).size.height * .085,
                   width: MediaQuery.of(context).size.width * .8,
                   child: TextField(
                     controller: _controller,
@@ -113,39 +193,10 @@ class Messages extends StatelessWidget {
                     shape: MaterialStateProperty.all(
                       const CircleBorder(),
                     ),
-                    backgroundColor:
-                        MaterialStateProperty.all(Colors.redAccent),
+                    backgroundColor: MaterialStateProperty.all(
+                        Theme.of(context).primaryColor),
                   ),
-                  onPressed: () async {
-                    controller.clear();
-                    print('onpressed working..........');
-                    if (message.isNotEmpty) {
-                      try {
-                        _controller.clear();
-
-                        await FirebaseFirestore.instance
-                            .collection('chats')
-                            .doc(currentUid)
-                            .collection(uid)
-                            .add({
-                          "message": message,
-                          "time": Timestamp.now(),
-                          'userId': currentUid,
-                        });
-                        await FirebaseFirestore.instance
-                            .collection('chats')
-                            .doc(uid)
-                            .collection(currentUid)
-                            .add({
-                          "message": message,
-                          "time": Timestamp.now(),
-                          'userId': currentUid,
-                        });
-                      } catch (error) {
-                        print(error);
-                      }
-                    }
-                  },
+                  onPressed: submit,
                   child: const Icon(Icons.send),
                 )
               ],
