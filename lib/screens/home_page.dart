@@ -1,4 +1,4 @@
-import 'package:chatapp/widgets/messages.dart';
+import 'package:chatapp/screens/contacts_screen.dart';
 import 'package:chatapp/widgets/user_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,21 +8,23 @@ import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
+
   Future<void> uploadImageUrl() async {
+    print("image uploading");
     final imageUrl = await FirebaseStorage.instance
         .ref()
         .child('user_images')
         .child(FirebaseAuth.instance.currentUser!.uid + '.jpg')
         .getDownloadURL();
+    print(imageUrl);
     await FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
-        .update({'userImage': imageUrl});
+        .set({'userImage': imageUrl}, SetOptions(merge: true));
   }
 
   @override
   Widget build(BuildContext context) {
-    uploadImageUrl();
     return Scaffold(
       drawer: Drawer(),
       appBar: AppBar(
@@ -53,6 +55,16 @@ class HomePage extends StatelessWidget {
           )
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => const ContactScreen()));
+        },
+        child: const Icon(
+          Icons.message,
+          color: Colors.white,
+        ),
+      ),
       body: FutureBuilder(
         future: Firebase.initializeApp(),
         builder: (ctx, data) {
@@ -61,6 +73,7 @@ class HomePage extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           } else {
+            uploadImageUrl();
             return UserList();
           }
         },

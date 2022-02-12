@@ -50,7 +50,7 @@ class _AuthScreenState extends State<AuthScreen> {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(authresult.user!.uid)
-            .set({'username': userName});
+            .set({'username': userName, 'userid': authresult.user!.uid});
       }
     } catch (error) {
       ScaffoldMessenger.of(context)

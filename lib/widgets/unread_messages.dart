@@ -15,18 +15,20 @@ class UnreadMessages extends StatelessWidget {
       child: StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('chats')
+              .doc(messageUid)
+              .collection('people')
               .doc(currentUid)
-              .collection(messageUid)
+              .collection('messages')
               .where('seenStatus', isEqualTo: "unseen")
+              .where('userId', isEqualTo: messageUid)
               .snapshots(),
           builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshots) {
             if (snapshots.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator(
                 color: Theme.of(context).primaryColor,
               );
-            } else if (snapshots.data!.docs.isEmpty) {
-              return const SizedBox();
-            } else {
+            } else if (snapshots.hasData && snapshots.data!.docs.isNotEmpty) {
+              print("unread messages" + snapshots.data!.docs.length.toString());
               return CircleAvatar(
                 backgroundColor: Theme.of(context).primaryColor,
                 radius: 8,
@@ -36,6 +38,8 @@ class UnreadMessages extends StatelessWidget {
                       fontSize: 17, fontWeight: FontWeight.bold),
                 ),
               );
+            } else {
+              return const SizedBox();
             }
           }),
     );

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class MessageBubble extends StatefulWidget {
   const MessageBubble(
       {Key? key,
+      required this.time,
+      required this.seenStatus,
       required this.message,
       required this.currentUserId,
       required this.msgUid})
@@ -10,6 +12,8 @@ class MessageBubble extends StatefulWidget {
   final String currentUserId;
   final String msgUid;
   final String message;
+  final String seenStatus;
+  final dynamic time;
 
   @override
   State<MessageBubble> createState() => _MessageBubbleState();
@@ -35,7 +39,7 @@ class _MessageBubbleState extends State<MessageBubble> {
               ? Alignment.centerRight
               : Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-          margin: EdgeInsets.all(5),
+          margin: const EdgeInsets.all(5),
           decoration: BoxDecoration(
               color: isCurrentUser()
                   ? Theme.of(context).primaryColor
@@ -51,11 +55,23 @@ class _MessageBubbleState extends State<MessageBubble> {
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20),
                     )),
-          child: Text(
-            widget.message,
-            style: TextStyle(
-                fontSize: 20,
-                color: isCurrentUser() ? Colors.white : Colors.black),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                widget.message,
+                style: TextStyle(
+                    fontSize: 20,
+                    color: isCurrentUser() ? Colors.white : Colors.black),
+              ),
+              Row(
+                children: [
+                  widget.currentUserId != widget.msgUid
+                      ? const SizedBox()
+                      : Text(widget.seenStatus)
+                ],
+              )
+            ],
           ),
         ),
       ],
