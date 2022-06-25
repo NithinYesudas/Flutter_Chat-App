@@ -21,14 +21,14 @@ class LastMessage extends StatelessWidget {
         builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Text(".....");
-          } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty  ) {
+          } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
             Map<String, dynamic> myData =
                 snapshot.data!.docs[0].data() as Map<String, dynamic>;
             return Text(
               myData['message'],
             );
           } else {
-            return const Text("Has no text");
+            return const SizedBox();
           }
         });
   }

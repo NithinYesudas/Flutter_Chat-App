@@ -29,7 +29,11 @@ class HomePage extends StatelessWidget {
       drawer: Drawer(),
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title: const Text("Chat app"),
+        foregroundColor: Colors.white,
+        title: const Text(
+          "Chat app",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: [
           DropdownButton(
             iconEnabledColor: Colors.white,

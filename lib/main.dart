@@ -9,7 +9,9 @@ void main() {
   runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primaryColor: Color(0xff1e5aff), accentColor: Color(0xffff8c20)),
+          useMaterial3: true,
+          primaryColor: Color(0xff1e5aff),
+          accentColor: Color(0xffff8c20)),
       home: const MyApp()));
 }
 

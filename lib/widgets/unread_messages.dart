@@ -24,9 +24,7 @@ class UnreadMessages extends StatelessWidget {
               .snapshots(),
           builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshots) {
             if (snapshots.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator(
-                color: Theme.of(context).primaryColor,
-              );
+              return SizedBox();
             } else if (snapshots.hasData && snapshots.data!.docs.isNotEmpty) {
               print("unread messages" + snapshots.data!.docs.length.toString());
               return CircleAvatar(
