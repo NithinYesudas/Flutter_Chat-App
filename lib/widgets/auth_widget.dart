@@ -21,31 +21,28 @@ class _AuthCardState extends State<AuthCard>
 
   final _passwordController = TextEditingController();
 
-
   late String userEmail, username = '', userPassword;
-   File? userImage;
-  void imageGetter(File image){
+  File? userImage;
+
+  void imageGetter(File image) {
     userImage = image;
     print('image Getter calling');
-
   }
 
   void submit() {
     print('submit fn calling.......................');
-    if(_authMode == AuthMode.Login)print('login mode');
+    if (_authMode == AuthMode.Login) print('login mode');
     final valid = _formKey.currentState!.validate();
 
     FocusScope.of(context).unfocus();
-    if( _authMode == AuthMode.Signup){
-      if(userImage == null ){
-        print('no image found');
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("No image found")));
+    if (_authMode == AuthMode.Signup) {
+      if (userImage == null) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("No image found")));
         return;
       }
-
     }
     if (valid) {
-      print('isvalid');
       _formKey.currentState!.save();
       widget.authRequest(username.trim(), userEmail.trim(), userPassword.trim(),
           _authMode == AuthMode.Login ? true : false, userImage);
@@ -115,8 +112,7 @@ class _AuthCardState extends State<AuthCard>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                if (_authMode == AuthMode.Signup)
-                 UserImagePicker(imageGetter),
+                if (_authMode == AuthMode.Signup) UserImagePicker(imageGetter),
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeIn,
@@ -132,13 +128,15 @@ class _AuthCardState extends State<AuthCard>
                         decoration: const InputDecoration(
                             labelText: 'Username', hintText: 'eg: Max'),
                         keyboardType: TextInputType.name,
-                        validator: _authMode == AuthMode.Signup? (value) {
-                          if (value!.isEmpty) {
-                            return "Can't leave empty";
-                          } else {
-                            return null;
-                          }
-                        }: null,
+                        validator: _authMode == AuthMode.Signup
+                            ? (value) {
+                                if (value!.isEmpty) {
+                                  return "Can't leave empty";
+                                } else {
+                                  return null;
+                                }
+                              }
+                            : null,
                         onSaved: (value) {
                           username = value!;
                         },

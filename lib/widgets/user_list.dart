@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'dart:core';
 import 'package:chatapp/widgets/last_message.dart';
-import 'package:chatapp/widgets/messages.dart';
+import 'package:chatapp/screens/messages.dart';
 import 'package:chatapp/widgets/unread_messages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -35,6 +36,7 @@ class UserList extends StatelessWidget {
                       future: fireStore.collection('users').doc(docId).get(),
                       builder:
                           (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                        print(snapshots.data?.docChanges.length);
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return const SizedBox();
